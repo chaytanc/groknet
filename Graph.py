@@ -20,6 +20,7 @@ class Vertex:
         return self.adjacent[neighbor]
 
 
+# useful to define architectures of networks for transfer learning
 class Graph:
     def __init__(self):
         self.vert_dict = {}

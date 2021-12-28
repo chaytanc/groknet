@@ -1,7 +1,8 @@
 import threading
 
-#XXX hyperparameter
+# XXX hyperparameter
 RECENT_ACTION_BUFFER_SIZE = 1
+
 
 class Agent:
     # Give it a name and a reference to the global environment state
@@ -64,9 +65,8 @@ class Agent:
         '''
         self.state.update(self)
 
-
     def check_rep(self):
-        assert(len(self.recent_actions) <= RECENT_ACTION_BUFFER_SIZE)
-        assert(self.attractiveness in range(0, 500))
-        assert(self.hunger in range(0, 500))
-        assert(self.enable == 0 or self.enable == 1)
+        assert (len(self.recent_actions) <= RECENT_ACTION_BUFFER_SIZE)
+        assert (self.attractiveness in range(0, 500))
+        assert (self.hunger in range(0, 500))
+        assert (self.enable == 0 or self.enable == 1)

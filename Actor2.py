@@ -9,6 +9,7 @@ from Network import Network
 
 # Actor 2 prediction of next state given action and state
 
+
 class Actor2(Network):
     def __init__(self, state_size, hidden_layer_sizes, action_size):
         super(Actor2, self).__init__(state_size, hidden_layer_sizes, action_size)

@@ -6,11 +6,11 @@ from torch.distributions import Categorical
 from Network import Network
 import actions
 
+
 # Actor 1 purpose is to output next real action and plan size or to be used for getting the
 # next action to add to the plan and maintain plan size?? while adding to the plan
 # Input the current or predicted state s
 # Critic backprops based on the reward it receives
-
 
 
 # Actor 1 returns action in form of a Plan
@@ -37,7 +37,7 @@ class Actor1(Network):
 
     def forward(self, state):
         # If no hidden layers
-        if(self.num_layers == 2):
+        if self.num_layers == 2:
             output = self.linear1(state)
             plan_output = self.plan_linear1(state)
         # Otherwise iterate over hidden layers and perform their transformations
@@ -51,7 +51,7 @@ class Actor1(Network):
             output = self.linear_last(output)
             plan_output = self.plan_last(plan_output)
         distribution = Categorical(F.softmax(output, dim=-1))
-        plan_size = int(plan_output) #XXX not sure this works to get a good plan size...?
+        plan_size = int(plan_output)  # XXX not sure this works to get a good plan size...?
         return distribution, plan_size
 
     # call forward and then turn distribution into an action
@@ -60,10 +60,9 @@ class Actor1(Network):
         dist, plan_size = self.forward(state)
         ind_of_highest = torch.argmax(dist)
         acts, num_actions = actions.get_actions_num_actions(actions.Actions)
-        assert(len(dist) == num_actions)
+        assert (len(dist) == num_actions)
         name, action = acts[ind_of_highest]
         return action
-
 
     # NOTE can scrap plan buffer for now and just use iterations_before_backprop param to make
     # scheduling properties / sequential action learning
@@ -72,6 +71,5 @@ class Actor1(Network):
         # Add action to self.plan, return first action in plan??
         # While self.plan is not empty, call get_action
         pass
-
 
 # Merge actions and prediction func

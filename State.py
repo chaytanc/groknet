@@ -16,11 +16,11 @@ class EnvState:
         self.lock = threading.Lock()
 
     def update_resources(self, agent):
-        '''
+        """
         Updates the agents in the environment and recalculates system health based on updates
         :param agent: The agent that recently updated its state and needs to inform EnvState of changes.
         :return:
-        '''
+        """
         self.check_rep()
         self.lock.acquire()
         id = agent.id

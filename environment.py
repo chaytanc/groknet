@@ -28,7 +28,8 @@ class InternetEnv():
         # get agents' health from envstate
         # get agents' recent actions from envstate
         # get number of other agents from envstate
-        reward = self.calc_reward(state_pred, )
+        state = 0 #XXX merge data of above sensors
+        reward = self.calc_reward(state_pred, state)
 
 
     def calc_reward(self, state_prediction, actual_state):
