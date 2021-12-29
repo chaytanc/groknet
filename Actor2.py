@@ -13,6 +13,9 @@ from Network import Network
 class Actor2(Network):
     def __init__(self, state_size, hidden_layer_sizes, action_size):
         super(Actor2, self).__init__(state_size, hidden_layer_sizes, action_size)
+        self.set_input_layer_size()
+        self.set_output_layer_size()
+        self.init_first_last_layers(hidden_layer_sizes)
         # Check if hidden_layers exist or not and size input output layers accordingly
         if len(hidden_layer_sizes) > 0:
             first = hidden_layer_sizes[0]
@@ -22,6 +25,14 @@ class Actor2(Network):
             self.linear1 = nn.Linear(self.state_size + self.action_size, self.state_size)
 
         self.make_hidden_layers(hidden_layer_sizes)
+
+    # Override
+    def set_input_layer_size(self):
+        self.input_size = self.state_size + self.action_size
+
+    # Override
+    def set_output_layer_size(self):
+        self.output_size = self.state_size
 
     def forward(self, state):
         # If no hidden layers

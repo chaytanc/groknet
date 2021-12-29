@@ -13,6 +13,10 @@ from Network import Network
 class Critic(Network):
     def __init__(self, state_size, hidden_layer_sizes, action_size):
         super(Critic, self).__init__(state_size, hidden_layer_sizes, action_size)
+        self.set_input_layer_size()
+        self.set_output_layer_size()
+        #XXX Need to recalc after setting input and output sizes?
+        self.init_first_last_layers(hidden_layer_sizes)
 
         if len(hidden_layer_sizes) > 0:
             first = hidden_layer_sizes[0]
@@ -22,6 +26,14 @@ class Critic(Network):
             self.linear1 = nn.Linear(self.state_size, 1)
 
         self.make_hidden_layers(hidden_layer_sizes)
+
+    # Override
+    def set_input_layer_size(self):
+        self.input_size = self.state_size
+
+    # Override
+    def set_output_layer_size(self):
+        self.output_size = 1
 
     def forward(self, state):
         # If no hidden layers
