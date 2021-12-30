@@ -19,6 +19,9 @@ import actions
 
 
 class Actor1(Network):
+    input_size: int
+    output_size: int
+
     def __init__(self, state_size, hidden_layer_sizes, action_size):
         super(Actor1, self).__init__(state_size, hidden_layer_sizes, action_size)
         self.set_input_layer_size()

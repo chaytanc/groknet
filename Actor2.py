@@ -16,14 +16,6 @@ class Actor2(Network):
         self.set_input_layer_size()
         self.set_output_layer_size()
         self.init_first_last_layers(hidden_layer_sizes)
-        # Check if hidden_layers exist or not and size input output layers accordingly
-        if len(hidden_layer_sizes) > 0:
-            first = hidden_layer_sizes[0]
-            self.linear1 = nn.Linear(self.state_size + self.action_size, first)
-            self.linear_last = nn.Linear(hidden_layer_sizes[-1], self.state_size)
-        else:
-            self.linear1 = nn.Linear(self.state_size + self.action_size, self.state_size)
-
         self.make_hidden_layers(hidden_layer_sizes)
 
     # Override

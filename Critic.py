@@ -15,16 +15,7 @@ class Critic(Network):
         super(Critic, self).__init__(state_size, hidden_layer_sizes, action_size)
         self.set_input_layer_size()
         self.set_output_layer_size()
-        #XXX Need to recalc after setting input and output sizes?
         self.init_first_last_layers(hidden_layer_sizes)
-
-        if len(hidden_layer_sizes) > 0:
-            first = hidden_layer_sizes[0]
-            self.linear1 = nn.Linear(self.state_size, first)
-            self.linear_last = nn.Linear(hidden_layer_sizes[-1], 1)
-        else:
-            self.linear1 = nn.Linear(self.state_size, 1)
-
         self.make_hidden_layers(hidden_layer_sizes)
 
     # Override

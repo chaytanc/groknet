@@ -1,5 +1,8 @@
+import numpy as np
 import torch.nn as nn
 import torch.nn.functional as F
+from torch.nn import Linear
+
 from Graph import Graph
 
 '''
@@ -8,7 +11,11 @@ General network from which to inherit abilities like creating any number of hidd
 
 
 class Network(nn.Module):
+    linear_last: Linear
+    linear1: Linear
+
     def __init__(self, state_size, hidden_layer_sizes, action_size, hidden_layer_types=None):
+        super(Network, self).__init__()
         self.state_size = state_size
         self.action_size = action_size
         self.set_input_layer_size()
@@ -17,7 +24,7 @@ class Network(nn.Module):
         # self.output_size = action_size # default val, can be overwritten
         self.num_layers = 2 + len(hidden_layer_sizes)
         #XXX working to init these to be able to iterate through layers and get weights and biases
-        self.init_first_last_layers(hidden_layer_sizes)
+        # self.init_first_last_layers(hidden_layer_sizes)
         self.hidden_layers = []
 
     def set_input_layer_size(self):
@@ -44,23 +51,41 @@ class Network(nn.Module):
             hidden_layer = nn.Linear(hidden_layer_sizes[i], hidden_layer_sizes[i + 1])
             self.hidden_layers.append(hidden_layer)
 
-    #XXX working here to make graph out of nn architecture -- need to do biases
+    #XXX working here to make graph out of nn architecture -- need to unit test! can grab some from
+    # old graph tests maybe
+    # First layer has no biases but each other layer has a matrix of biases added to each incoming
+    # computation
     def get_architecture(self):
         g = Graph()
         # manually get first and last layer size
-        for layer in self.hidden_layers:
+        first_biases = np.zeros(self.input_size)
+        first_weights = self.linear1.weight
+        last_biases = self.linear_last.bias
+        last_weights = self.linear_last.weight
+        self.construct_graph_from_layer(g, first_weights, first_biases, 0)
+        # -1 represents last layer number
+        last_layer_num = len(self.hidden_layers) + 1
+        self.construct_graph_from_layer(g, last_weights, last_biases, last_layer_num)
+
+        for layer_num, layer in enumerate(self.hidden_layers):
             layer_weights = layer.weight
-            # Iterate through two dimensions of connections, ex if 4 node in connects to 8 node out
-            # we get size ([8, 4]) such as [[1, 2, 3, 4th col], ... 8th row]
-            for next_layer_node_i, rows in enumerate(layer_weights):
-                for input_layer_node_j, col_val in enumerate(rows):
-                    node_from = str(input_layer_node_j)
-                    node_to = str(next_layer_node_i)
-                    edgeid = node_from + node_to
-                    frm = g.add_vertex(node_from)
-                    to = g.add_vertex(node_to)
-                    g.add_edge(edgeid=edgeid, frm=frm, to=to, weight=col_val)
-        for param in self.parameters():
-            pass
-            # if param.shape ==
-            # print(self.)
+            layer_biases = layer.bias
+            self.construct_graph_from_layer(g, layer_weights, layer_biases, layer_num + 1)
+        return g
+
+    @staticmethod
+    def construct_graph_from_layer(g, layer_weights, layer_biases, layer_num):
+        # Iterate through two dimensions of connections, ex if 4 node in connects to 8 node out
+        # we get size ([8, 4]) ([output, input]) such as [[1, 2, 3, 4th col], ... 8th row]
+        for next_layer_node_i, rows in enumerate(layer_weights):
+            bias = layer_biases[next_layer_node_i]
+            for input_layer_node_j, col_val in enumerate(rows):
+                # if layer_num == -1 :
+                #     node_from = str(input_layer_node_j) + "-" + str(len())
+                #     node_to = str(next_layer_node_i) + "-" + str(layer_num + 1)
+                #     edgeid = str(node_from + "_" + node_to)
+                # else:
+                node_from = str(input_layer_node_j) + "-" + str(layer_num)
+                node_to = str(next_layer_node_i) + "-" + str(layer_num + 1)
+                edgeid = str(node_from + "_" + node_to)
+                g.add_edge(edgeid=edgeid, frm=node_from, to=node_to, weight=col_val, bias=bias)
