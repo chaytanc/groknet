@@ -1,8 +1,8 @@
 import unittest
 from Graph import Graph
 
-class GraphTest(unittest.TestCase):
 
+class GraphTest(unittest.TestCase):
 
     # // Sets up a full graph used for tests
     def setUp(self):
@@ -22,7 +22,7 @@ class GraphTest(unittest.TestCase):
         self.cNode = self.graph.add_vertex("c")
         self.dNode = self.graph.add_vertex("d")
         self.eNode = self.graph.add_vertex("e")
-        #XXX make fake layers to test in style of tensor
+        # XXX make fake layers to test in style of tensor
         # Edges
         self.edgeAC = self.graph.add_edge("1", "a", "c", weight=1, bias=1)
         self.edgeBC = self.graph.add_edge("2", "b", "c", 1, 1)
@@ -31,18 +31,18 @@ class GraphTest(unittest.TestCase):
 
     def test_add_edge(self):
         edge = self.emptyGraph.add_edge("nonexistent vertices edge", "a", "b", 3, 4)
-        assert(self.emptyGraph.get_edge("nonexistent vertices edge") == edge)
+        assert (self.emptyGraph.get_edge("nonexistent vertices edge") == edge)
         a = self.emptyGraph.get_vertex("a")
         b = self.emptyGraph.get_vertex("b")
-        assert(a and b)
-        assert(edge.weight == 3 and a.bias == 0 and b.bias == 4)
+        assert (a and b)
+        assert (edge.weight == 3 and a.bias == 0 and b.bias == 4)
         # Add a redundant edge
         edge = self.emptyGraph.add_edge("nonexistent vertices edge", "a", "b", 5, 6)
         a = self.emptyGraph.get_vertex("a")
         b = self.emptyGraph.get_vertex("b")
-        assert(a is not None and b is not None)
-        assert(self.emptyGraph.get_edge("nonexistent vertices edge") == edge)
-        assert(edge.weight == 5 and a.bias == 0 and b.bias == 6)
+        assert (a is not None and b is not None)
+        assert (self.emptyGraph.get_edge("nonexistent vertices edge") == edge)
+        assert (edge.weight == 5 and a.bias == 0 and b.bias == 6)
 
     def test_get_vertex(self):
         a = self.graph.get_vertex("a")
@@ -54,8 +54,6 @@ class GraphTest(unittest.TestCase):
 
     def test_add_layer(self):
         self.assertEqual(True, False)  # add assertion here
-
-
 
 
 if __name__ == '__main__':

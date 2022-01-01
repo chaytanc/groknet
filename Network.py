@@ -23,8 +23,6 @@ class Network(nn.Module):
         # self.input_size = state_size # default val, can be overwritten
         # self.output_size = action_size # default val, can be overwritten
         self.num_layers = 2 + len(hidden_layer_sizes)
-        #XXX working to init these to be able to iterate through layers and get weights and biases
-        # self.init_first_last_layers(hidden_layer_sizes)
         self.hidden_layers = []
 
     def set_input_layer_size(self):
@@ -51,8 +49,6 @@ class Network(nn.Module):
             hidden_layer = nn.Linear(hidden_layer_sizes[i], hidden_layer_sizes[i + 1])
             self.hidden_layers.append(hidden_layer)
 
-    #XXX working here to make graph out of nn architecture -- need to unit test! can grab some from
-    # old graph tests maybe
     # First layer has no biases but each other layer has a matrix of biases added to each incoming
     # computation
     def get_architecture(self):
@@ -80,11 +76,6 @@ class Network(nn.Module):
         for next_layer_node_i, rows in enumerate(layer_weights):
             bias = layer_biases[next_layer_node_i]
             for input_layer_node_j, col_val in enumerate(rows):
-                # if layer_num == -1 :
-                #     node_from = str(input_layer_node_j) + "-" + str(len())
-                #     node_to = str(next_layer_node_i) + "-" + str(layer_num + 1)
-                #     edgeid = str(node_from + "_" + node_to)
-                # else:
                 node_from = str(input_layer_node_j) + "-" + str(layer_num)
                 node_to = str(next_layer_node_i) + "-" + str(layer_num + 1)
                 edgeid = str(node_from + "_" + node_to)

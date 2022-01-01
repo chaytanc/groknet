@@ -3,6 +3,7 @@ import threading
 # on scale of 500 total system resources
 AGENT_RESOURCE_OVERHEAD = 1
 
+
 class EnvState:
     def __init__(self):
         # List of Agents with ids, attractiveness
@@ -10,7 +11,7 @@ class EnvState:
         self.agents = {}
         # Restructured to be OOP with agents managing their own states
         # {agentid : health out of 500}
-        #self.agent_attractiveness = {}
+        # self.agent_attractiveness = {}
         # Start at full health but agent hungers and overhead should diminish without good predictions
         self.system_resources = 500
         self.lock = threading.Lock()
@@ -57,6 +58,4 @@ class EnvState:
         return normalized
 
     def check_rep(self):
-        assert(self.system_resources in range(0, 500))
-
-
+        assert (self.system_resources in range(0, 500))

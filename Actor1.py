@@ -4,7 +4,7 @@ import torch.optim as optim
 import torch.nn.functional as F
 from torch.distributions import Categorical
 from Network import Network
-import actions
+from actions import Actions
 
 
 # Actor 1 purpose is to output next real action and plan size or to be used for getting the
@@ -24,6 +24,7 @@ class Actor1(Network):
 
     def __init__(self, state_size, hidden_layer_sizes, action_size):
         super(Actor1, self).__init__(state_size, hidden_layer_sizes, action_size)
+        self.actions_set = Actions(self.state_size)
         self.set_input_layer_size()
         self.set_output_layer_size()
         self.init_first_last_layers(hidden_layer_sizes)
@@ -36,6 +37,8 @@ class Actor1(Network):
             self.plan_last = nn.Linear(hidden_layer_sizes[-1], 1)
         else:
             self.linear1 = nn.Linear(self.state_size, self.action_size)
+            #XXX maybe add a neuron to input layer and input a flag indicating whether we're getting the plan
+            # or the sequence length or any other necessary constants for choosing an action
             self.plan_linear1 = nn.Linear(self.state_size, 1)
 
         # Create the hidden layers if there are any

@@ -1,4 +1,6 @@
 from State import EnvState
+from observer import Observer
+
 
 class InternetEnv():
 
@@ -7,8 +9,9 @@ class InternetEnv():
         Set up selenium + browser etc??
         """
         self.s = EnvState()
+        self.o = Observer()
 
-    def step(self, action, state_pred):
+    def step(self, agent_driver, state_pred):
         """
         Performs an action in the environment and returns the next state, the reward from that action, and
         whether an episode is done or not (has the agent died?)
@@ -19,15 +22,18 @@ class InternetEnv():
         :return: done: indicates if time to reset environment
         """
         # perform given action to get next state
-        action()
+        # action()
         #XXX working here to implement actions
-        # take screenshot
-        # screenshot_state =
-        # scrape html
-        # html_state =
+        # NOTE: rather than pass in an individual agent's Action object then take the action
+        # The agent just takes the action. Environment's responsibility is to look around
+        # and provide next state, not to manage what and when things act within it.
+        # HOWEVER must pass in driver of the agent, which is essentially the agent's location in the env
+        screenshot_state = self.o.see(agent_driver)
+        html_state = self.o.read_html(agent_driver)
         # get agents' health from envstate
         # get agents' recent actions from envstate
         # get number of other agents from envstate
+        # state = torch.cat(screenshot, html, hungers, attractions, recent_actions, num_agents)
         state = 0 #XXX merge data of above sensors
         reward = self.calc_reward(state_pred, state)
 

@@ -42,6 +42,10 @@ def signal_handler(sig, frame):
 
 signal.signal(signal.SIGINT, signal_handler)
 
+def make(hyperparameters):
+    # set up actors and critics and other necessary networks
+    pass
+
 
 def train():
     # Init gradient optimizers
@@ -70,7 +74,7 @@ def train():
         # A = Q(s, a) - V(s)
         # Bellman Optimality: Q(s, a) = r_t+1 + gamma * V(s')
         # A = r_t+1(s) + gamma * V(s') - V(s)
-        # backprop actor1 from advantages
+        # backprop actor1 from advantages and make sure TextGenerator gets backpropped too
         # backprop critic from diff of reward and predicted values
 
 
