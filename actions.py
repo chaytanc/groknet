@@ -7,7 +7,7 @@ from selenium.webdriver import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from TextGenerator import TextGenerator
+from text_generator import TextGenerator
 import torch
 from observer import Observer
 
@@ -22,7 +22,7 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
 class Actions(Observer):
-    def __init__(self, state_size, headless=True, init_url="www.google.com"):
+    def __init__(self, state_size, headless=True, init_url="https://www.google.com"):
         self.headless = headless
         self.init_url = init_url
         self.driver = webdriver.Firefox()

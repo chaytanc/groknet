@@ -1,18 +1,18 @@
-import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from Network import Network
+from network import Network
 
-# Actor 2 purpose is to output the predicted current state
-# Input the past state, past actions + plan
-# Backprop based on actual current state and loss of last prediction
+# Critic purpose is output the approximate value of being in the current state
+# Input current state, plan, reward
+# Output value of current state (can be used to calc advantage and thus how good actor actions were)
+# Critic backprops to Actor 1 based on reward it receives
 
-# Actor 2 prediction of next state given action and state
-
-
-class Actor2(Network):
+# NOTE: Don't need to make critic network variable necessarily, mostly concerned with actor 1
+# variable ability to compose actions and actor 2 predictions being variable size to scale w
+# size of variable sensory input
+class Critic(Network):
     def __init__(self, state_size, hidden_layer_sizes, action_size):
-        super(Actor2, self).__init__(state_size, hidden_layer_sizes, action_size)
+        super(Critic, self).__init__(state_size, hidden_layer_sizes, action_size)
         self.set_input_layer_size()
         self.set_output_layer_size()
         self.init_first_last_layers(hidden_layer_sizes)
@@ -20,11 +20,11 @@ class Actor2(Network):
 
     # Override
     def set_input_layer_size(self):
-        self.input_size = self.state_size + self.action_size
+        self.input_size = self.state_size
 
     # Override
     def set_output_layer_size(self):
-        self.output_size = self.state_size
+        self.output_size = 1
 
     def forward(self, state):
         # If no hidden layers

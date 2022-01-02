@@ -3,7 +3,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torch.nn import Linear
 
-from Graph import Graph
+from graph import Graph
 
 '''
 General network from which to inherit abilities like creating any number of hidden layers

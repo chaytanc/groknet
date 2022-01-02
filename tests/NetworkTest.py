@@ -1,10 +1,10 @@
 import unittest
 import torch
-from Graph import Graph
-from Actor2 import Actor2
-from Actor1 import Actor1
-from Critic import Critic
-from TextGenerator import TextGenerator
+from graph import Graph
+from actor2 import Actor2
+from actor1 import Actor1
+from critic import Critic
+from text_generator import TextGenerator
 
 
 class NetworkTest(unittest.TestCase):
@@ -18,9 +18,9 @@ class NetworkTest(unittest.TestCase):
         self.aone = Actor1(state_size, hidden_layer_sizes, action_size)
         self.c = Critic(state_size, hidden_layer_sizes, action_size)
         self.seq_len = 5
-        self.fake_state = torch.Tensor([1, 2, 3])
+        self.fake_state = torch.Tensor([[1, 2, 3]])
         # self.tg = TextGenerator(input_size=len(self.fake_state), hidden_size=3, num_layers=1, seq_len=self.seq_len)
-        self.tg = TextGenerator(input_size=1, hidden_size=3, num_layers=3, seq_len=self.seq_len)
+        self.tg = TextGenerator(state_size=self.fake_state.size(), hidden_size=3, num_layers=3, seq_len=self.seq_len)
 
     def test_get_architecture(self):
         """
@@ -61,10 +61,35 @@ class NetworkTest(unittest.TestCase):
             assert actual_edge.approx_same_edge(edge)
 
     def test_text_gen(self):
-        out = self.tg.recurring_forward(self.fake_state, "")
+        init_state = (self.tg.init_state(self.fake_state))
+        # out = self.tg.recurring_forward(self.fake_state, "")
+        out = self.tg.recurring_forward(self.fake_state, init_state, "")
         # Probabilistic, so may fail but should pass most the time
         assert(len(out) < 3*self.seq_len)
+        print("out: ", out)
         assert(out != "")
+
+    def test_text_gen_resize(self):
+        # fake states:
+        # total_dims = 2*3 = 6
+        too_small = torch.Tensor(2, 3)
+        # total dims = 2*3*4*5 = 120
+        too_big = torch.Tensor(2, 3, 4, 5)
+        really_big = torch.Tensor(2, 3, 4, 5, 2, 2)
+        new = self.tg.resize_state_3_dim(too_small)
+        assert(new.dim() == 3)
+        assert(new.size() == torch.Size([2, 3, 1]))
+        new = self.tg.resize_state_3_dim(too_big)
+        assert(new.dim() == 3)
+        assert(new.size() == torch.Size([6, 4, 5]))
+        new = self.tg.resize_state_3_dim(really_big)
+        assert(new.dim() == 3)
+        assert(new.size() == torch.Size([120, 2, 2]))
+
+    def tearDown(self) -> None:
+        self.aone.actions_set.end()
+        # self.atwo.actions_set.end()
+        # self.c.actions_set.end()
 
 
 
