@@ -2,7 +2,8 @@ from state import EnvState
 from observer import Observer
 
 
-class InternetEnv():
+# There is one InternetEnv for entire system of agents etc
+class InternetEnv:
 
     def __init__(self):
         """

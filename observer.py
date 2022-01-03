@@ -25,7 +25,7 @@ class Observer:
         """
         Scrape the html of the current page and return it as a bag of words?? As a sequence of strings broken by spaces?
         :param driver: Input the driver which you wish to observe
-        :return: tensor html of the page the driver is on
+        :return: array with interger representation of html of the page the driver is on
         """
         soup = BeautifulSoup(driver.page_source)
         #XXX what does this do? How do you turn a string to a tensor??

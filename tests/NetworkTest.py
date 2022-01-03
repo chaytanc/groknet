@@ -63,7 +63,7 @@ class NetworkTest(unittest.TestCase):
     def test_text_gen(self):
         init_state = (self.tg.init_state(self.fake_state))
         # out = self.tg.recurring_forward(self.fake_state, "")
-        out = self.tg.recurring_forward(self.fake_state, init_state, "")
+        # out = self.tg.recurring_forward(self.fake_state, init_state, "")
         # Probabilistic, so may fail but should pass most the time
         assert(len(out) < 3*self.seq_len)
         print("out: ", out)

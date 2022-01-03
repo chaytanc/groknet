@@ -3,7 +3,12 @@ import threading
 # on scale of 500 total system resources
 AGENT_RESOURCE_OVERHEAD = 1
 
-
+#XXX turn into adt which will help with text_generator??
+# class PartialEnvState
+# agent.make_observations()
+# state = []
+# each sensory input is array in larger state array where len(input) is the max length of any one
+# raw input
 class EnvState:
     def __init__(self):
         # List of Agents with ids, attractiveness
@@ -59,3 +64,23 @@ class EnvState:
 
     def check_rep(self):
         assert (self.system_resources in range(0, 500))
+
+    # #XXX working here to make function that assembles all information about state and actions etc
+    # # to make uniform representation of state w padding
+    # def pad_state(self, state_array):
+    #     # state is array of each individual output from a sensor
+    #     # each sensor output should be flattened
+    #     flattened_state_arr = []
+    #     max_vals = 0
+    #     for _, sensory_output in enumerate(state_array):
+    #         flat = np.flatten(sensory_output)
+    #         if flat.size() > max_vals():
+    #             max_vals = flat.size()
+    #         flattened_state_arr.append(flat)
+    #
+    #     # get sensory output of state with most values
+    #     # pad other sensory outputs to be same len
+    #     for flat_sense in flattened_state_arr:
+    #         for val in range(max_vals - len(flat_sense)):
+    #             np.append(flat_sense, 0)
+
