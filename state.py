@@ -8,7 +8,7 @@ AGENT_RESOURCE_OVERHEAD = 1
 # agent.make_observations()
 # state = []
 # each sensory input is array in larger state array where len(input) is the max length of any one
-# raw input
+# raw input ex: [[1, 2 3], [3, 0, 0]]
 class EnvState:
     def __init__(self):
         # List of Agents with ids, attractiveness

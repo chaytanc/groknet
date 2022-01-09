@@ -28,10 +28,11 @@ class Actions(Observer):
         self.driver = webdriver.Firefox()
         self.driver.get(init_url)
         self.wait = WebDriverWait(self.driver, timeout=3)
-        self.phrase_generator = TextGenerator(
-            state_size, hp['phrase_hidden_size'],
-            hp['phrase_num_layers'], hp['phrase_seq_len']
-        )
+        fake_state = torch.zeros(state_size)
+        # self.phrase_generator = TextGenerator(
+        #     fake_state, hp['phrase_hidden_size'],
+        #     hp['phrase_num_layers'], hp['phrase_seq_len']
+        # )
 
     def click(self):
         """

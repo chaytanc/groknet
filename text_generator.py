@@ -28,6 +28,7 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 class TextGenerator(nn.Module):
     def __init__(self, empty_dataset_state: torch.Tensor, hidden_size, num_layers, seq_len):
+    # def __init__(self, input_size: int, hidden_size, num_layers, seq_len):
         """
         :param empty_state: A zero filled tensor representing the size / shape of the represented state
         :param hidden_size:
@@ -42,6 +43,7 @@ class TextGenerator(nn.Module):
         self.all_letters.append("<eos>")
         self.int_to_char = [letter for letter in self.all_letters]
         self.hidden_size = hidden_size
+        self.empty_dataset = empty_dataset_state
         # Makes a dummy state tensor so that we can resize it and get the input_size
         # from the new dimensions
         #XXX working here to properly resize / flatten
@@ -50,32 +52,35 @@ class TextGenerator(nn.Module):
         # self.resized_state = torch.unsqueeze(torch.unsqueeze(flat))
         # self.resized_state = self.resize_state_3_dim(torch.Tensor(state_size))
         # input_size = self.resized_state.size(-1)
-        self.lstm = nn.LSTM(empty_dataset_state[-1], hidden_size, num_layers, batch_first=True)
+        self.lstm = nn.LSTM(empty_dataset_state.size(2), hidden_size, num_layers, batch_first=True)
+        # self.lstm = nn.LSTM(input_size, hidden_size, num_layers, batch_first=True)
         self.fully_connected = nn.Linear(hidden_size, len(self.all_letters))
         self.softmax = nn.Softmax(dim=1)
 
     #XXX working here to concat past letter selected as a part of the state propagated through
-    def add_letter_to_state(self, state, ascii_letter):
-        # Treat letter as another sensory input of state
-        # letter_tensor = torch.zeros(self.state_size)
-        # letter_tensor[0] = ascii_letter
-        t = torch.zeros(len(state[0]))
-        t = torch.fill(t, ascii_letter)
-        new = torch.cat([state, t])
-        return new
+    # If we can get dataset properly made, then shouldn't have to add letter prediction to the state manually
+    # because hidden states of RNN should propagate through each prediction made
+    # def add_letter_to_state(self, state, ascii_letter):
+    #     # Treat letter as another sensory input of state
+    #     # letter_tensor = torch.zeros(self.state_size)
+    #     # letter_tensor[0] = ascii_letter
+    #     t = torch.zeros(len(state[0]))
+    #     t = torch.fill(t, ascii_letter)
+    #     new = torch.cat([state, t])
+    #     return new
 
     def forward(self, x, prev_state):
-        resized = self.resize_state_3_dim(x)
+        # resized = self.resize_state_3_dim(x)
         # h0, c0 = self.init_state(resized)
-        output, state = self.lstm(resized, prev_state)
+        output, state = self.lstm(x, prev_state)
         output = self.fully_connected(output[:, -1, :])
-        output = self.softmax(output)
+        # output = self.softmax(output)
         return output, state
 
     def init_state(self, state):
-        resized = self.resize_state_3_dim(state)
-        h0 = torch.zeros(self.num_layers, resized.size(0), self.hidden_size).to(self.device)
-        c0 = torch.zeros(self.num_layers, resized.size(0), self.hidden_size).to(self.device)
+        # resized = self.resize_state_3_dim(state)
+        h0 = torch.zeros(self.num_layers, self.empty_dataset.size(0), self.hidden_size).to(self.device)
+        c0 = torch.zeros(self.num_layers, self.empty_dataset.size(0), self.hidden_size).to(self.device)
         return h0, c0
 
     # def recurring_forward(self, x, prev_state, string_so_far) -> str:
@@ -134,11 +139,12 @@ class TextGenerator(nn.Module):
 
 
 # USAGE EX:
-def tri(state):
-    # Want one batch (don't break up state into different training batches, one state is one batch and
-    # we only get one at a time)
-    # Want to use a window size of 20
-    # Input data has as many features as there are sensory inputs / different observations
-    data = TextGenDataset(state, seq_len=20)
-    rnn_in = torch.Tensor([x for x, _ in data])
-    out, hidden = forward(rnn_in)
+# def tri(state):
+#     # Want one batch (don't break up state into different training batches, one state is one batch and
+#     # we only get one at a time)
+#     # Want to use a window size of 20
+#     # Input data has as many features as there are sensory inputs / different observations
+#     data = TextGenDataset(state, seq_len=20)
+#     # data = DataLoader(ds, batch_size=2)
+#     rnn_in = torch.Tensor([x for x, _ in data])
+#     out, hidden = forward(rnn_in)
